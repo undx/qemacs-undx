@@ -2,6 +2,9 @@
 config.mak
 config.h
 fbffonts.c
+libqhtml/csstoqe
+libqhtml/docbook_style.c
+libqhtml/html_style.c
 # object-directories
 .objs*
 .tobjs*
