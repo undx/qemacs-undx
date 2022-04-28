@@ -95,6 +95,10 @@ ifdef CONFIG_DOC
   TARGETS += qe-doc.html
 endif
 
+ifdef CONFIG_INFO
+  TARGETS += qe.info
+endif
+
 ifdef CONFIG_HAIKU
   OBJS += haiku.o
   LIBS += -lbe -lstdc++
@@ -534,13 +538,18 @@ qe-doc.html: qe-doc.texi Makefile
 		sed "s/<!-- Created on .* by/<!-- Created by/" > $@
 	@rm $@.tmp
 
+# info
+qe.info: qe-doc.texi Makefile
+	LANGUAGE=en_US LC_ALL=en_US.UTF-8 makeinfo $<
+	$(echo) made $@ from $<
+
 #
 # Maintenance targets
 #
 clean:
 	$(MAKE) -C libqhtml clean
 	rm -rf *.dSYM .objs* .tobjs* .xobjs* qe_debug
-	rm -f *~ *.o *.a *.exe *_g TAGS gmon.out core *.exe.stackdump   \
+	rm -f *~ *.o *.a *.exe *.info *_g TAGS gmon.out core *.exe.stackdump   \
            qe tqe t1qe xqe qfribidi kmaptoqe ligtoqe html2png fbftoqe fbffonts.c \
            cptoqe jistoqe allmodules.txt basemodules.txt '.#'*[0-9]
 
@@ -549,7 +558,7 @@ distclean: clean
 	rm -rf .objs* .tobjs* .xobjs*
 	rm -rf config.h config.mak
 
-install: $(TARGETS) qe.1
+install: $(TARGETS) qe.1 qe.info
 	$(INSTALL) -m 755 -d $(DESTDIR)$(prefix)/bin
 	$(INSTALL) -m 755 -d $(DESTDIR)$(mandir)/man1
 	$(INSTALL) -m 755 -d $(DESTDIR)$(datadir)/qe
@@ -571,12 +580,16 @@ endif
 ifdef CONFIG_HTML
 	$(INSTALL) -m 755 -s html2png$(EXE) $(DESTDIR)$(prefix)/bin
 endif
+ifdef CONFIG_INFO
+	$(INSTALL) -m 644 qe.info $(DESTDIR)$(infodir)/qe.info
+endif
 
 uninstall:
 	rm -f $(DESTDIR)$(prefix)/bin/qemacs$(EXE)   \
 	      $(DESTDIR)$(prefix)/bin/qe$(EXE)       \
 	      $(DESTDIR)$(prefix)/bin/ffplay$(EXE)   \
 	      $(DESTDIR)$(mandir)/man1/qe.1          \
+	      $(DESTDIR)$(infodir)/qe.info           \
 	      $(DESTDIR)$(datadir)/qe/kmaps          \
 	      $(DESTDIR)$(datadir)/qe/ligatures      \
 	      $(DESTDIR)$(prefix)/bin/html2png$(EXE)

@@ -1,13 +1,48 @@
 \input texinfo @c -*- texinfo -*-
 
+@c %**start of header
+@setfilename qe.info
 @settitle QEmacs Documentation
+@setchapternewpage odd
+@c %**end of header
+
+@c for install-info
+@dircategory Editors
+@direntry
+* QEmacs: (qemacs).             A very small but powerful UNIX editor.
+@end direntry
+
+@copying
+GNU LESSER GENERAL PUBLIC LICENSE Version 2.1 @copyright{}
+@end copying
+
+@ifnottex
+@node Top
+@comment  node-name,  next,  previous,  up
+@top qemacs
+@end ifnottex
+
+@menu
+* Introduction::
+* Invocation::
+* Common editing commands::
+* Configuration file and resources::
+* Internationalization::
+* Editing Modes::
+* Fonts::
+* Html2png Tool::
+* Developper's Guide::
+@end menu
+
 @titlepage
 @sp 7
 @center @titlefont{QEmacs Documentation}
 @sp 3
+@insertcopying
 @end titlepage
 
 
+@node Introduction
 @chapter Introduction
 QEmacs (for Quick Emacs) is a very small but powerful
 UNIX editor. It has features that even big editors lack :
@@ -56,6 +91,7 @@ rendering on VT100 terminals.
 
 @end itemize
 
+@node Invocation
 @chapter Invocation
 
 @example
@@ -89,6 +125,8 @@ usage: ffplay
 
 QEmacs goes to @code{dired} mode automatically so that you can browse your
 files easily (same as @kbd{C-x C-d} key).
+
+@node Common editing commands
 
 @chapter Common editing commands
 
@@ -194,8 +232,8 @@ M-r                     : replace-string
 @section Paragraph / case handling
 
 @example
-M-@{                     : backward-paragraph
-M-@}                     : forward-paragraph
+M-@{                    : backward-paragraph
+M-@}                    : forward-paragraph
 M-q                     : fill-paragraph
 M-l                     : downcase-word
 M-u                     : upcase-word
@@ -214,6 +252,7 @@ C-x (                   : start-kbd-macro
 C-x )                   : end-kbd-macro
 C-x e, C-\              : call-last-kbd-macro
 @end example
+
 
 @section Window handling
 
@@ -269,6 +308,7 @@ C-x RET w               : word-wrap
 C-x C-d                 : dired
 @end example
 
+@node Configuration file and resources
 @chapter Configuration file and resources
 
 @section Resource path
@@ -296,7 +336,7 @@ Set a global key binding to a command.
 @item set_system_font(family, system_fonts)
 
 (X11) Maps a system font to a QEmacs font family. Multiple fonts can be
-given as fallback (@xref{fonts}).
+given as fallback (@xref{Fonts}).
 
 @item set_style(stylename, css_property, css_value)
 Set a colorization style (see @file{qestyle.h} and @file{config.eg} for
@@ -317,6 +357,7 @@ Most QEmacs object files can in fact be compiled either as a plugin or
 be statically linked in qemacs. The plugin system is strongly inspirated
 from the Linux Kernel 2.4 module system.
 
+@node Internationalization
 @chapter Internationalization
 
 @section Charsets
@@ -369,6 +410,7 @@ to handle character modifiers such as accents. It means that even if your
 font does not support the Unicode character modifiers, QEmacs will do its
 best to handle them.
 
+@node Editing Modes
 @chapter Editing Modes
 
 @section C mode
@@ -465,258 +507,136 @@ The following properties are partially (see comments) or totally supported:
 @itemize
 @item display: The value 'inline-block' is a QEmacs extension.
 @item color
-
 @item background-color
-
 @item white-space: The value 'prewrap' is a QEmacs extension.
 @item direction
-
 @item float
-
 @item font-family
-
 @item font-style
-
 @item font-weight
-
 @item font-size
-
 @item text-decoration
-
 @item text-align
-
 @item width
-
 @item height
-
 @item unicode-bidi
-
 @item border-width
-
 @item border-left-width
-
 @item border-top-width
-
 @item border-right-width
-
 @item border-bottom-width
-
 @item border-color
-
 @item border-left-color
-
 @item border-top-color
-
 @item border-right-color
-
 @item border-bottom-color
-
 @item border-style
-
 @item border-left-style
-
 @item border-top-style
-
 @item border-right-style
-
 @item border-bottom-style
-
 @item border
-
 @item border-left
-
 @item border-top
-
 @item border-right
-
 @item border-bottom
-
 @item padding
-
 @item padding-left
-
 @item padding-top
-
 @item padding-right
-
 @item padding-bottom
-
 @item margin
-
 @item margin-left
-
 @item margin-top
-
 @item margin-right
-
 @item margin-bottom
-
 @item clear
-
 @item overflow
-
 @item visibility
-
 @item table-layout
-
 @item vertical-align
-
 @item border-collapse
-
 @item border-spacing
-
 @item border-spacing-horizontal
-
 @item border-spacing-vertical
-
 @item line-height
-
 @item content
-
 @item caption-side
-
 @item marker-offset
-
 @item list-style-type
-
 @item column-span: QEmacs extension
 @item row-span: QEmacs extension
 @item content-alt: QEmacs extension. Same behavior as property 'content' but used for images
-
 @item list-style-position
-
 @item counter-reset
-
 @item counter-increment
-
 @item bidi-mode: QEmacs extension: use lower/upper case to test bidi algorithm
 @item position: @samp{fixed} is not supported. Only 'block' boxes are positionned
 @item top
-
 @item bottom
-
 @item left
-
 @item right
-
 @end itemize
 
 The following properties are completely unsupported:
 
 @itemize
-
 @item background
-
 @item background-attachment
-
 @item background-image
-
 @item background-position
-
 @item background-repeat
-
 @item clip
-
 @item cursor
-
 @item empty-cells
-
 @item font
-
 @item font-size-adjust
-
 @item font-stretch
-
 @item font-variant
-
 @item letter-spacing
-
 @item list-style
-
 @item list-style-image
-
 @item max-height
-
 @item max-width
-
 @item min-height
-
 @item min-width
-
 @item outline
-
 @item outline-color
-
 @item outline-style
-
 @item outline-width
-
 @item quotes
-
 @item text-indent
-
 @item text-shadow
-
 @item text-transform
-
 @item word-spacing
-
 @item z-index
-
 @item marks
-
 @item page
-
 @item page-break-after
-
 @item page-break-before
-
 @item page-break-inside
-
 @item size
-
 @item orphans
-
 @item widows
-
 @item azimuth
-
 @item cue
-
 @item cue-after
-
 @item cue-before
-
 @item elevation
-
 @item pause
-
 @item pause-after
-
 @item pause-before
-
 @item pitch
-
 @item pitch-range
-
 @item pitch-during
-
 @item richness
-
 @item speak
-
 @item speak-header
-
 @item speak-punctuation
-
 @item speak-rate
-
 @item stress
-
 @item voice-family
-
 @item volume
-
 @end itemize
 
 @section Graphical DocBook mode
@@ -790,7 +710,7 @@ Pause/Resume
 (@samp{M-x av-cycle-audio}) Cycle through available audio channels.
 @end table
 
-@node fonts
+@node Fonts
 @chapter Fonts
 
 @section VT100 display
@@ -850,6 +770,7 @@ In the tool @samp{html2png}, QEmacs uses internal fonts which are the
 @samp{Times}, @samp{Helvetica} and @samp{Unifont} supplied in X11. They
 are highly compressed in the @dfn{FBF} font format.
 
+@node Html2png Tool
 @chapter Html2png Tool
 
 @section Introduction
@@ -890,6 +811,7 @@ set the default charset (default='8859-1'). Use -f ? to list supported charsets.
 set the output filename (default='a.png')
 @end table
 
+@node Developper's Guide
 @chapter Developper's Guide
 
 @section Plugins

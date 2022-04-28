@@ -74,6 +74,7 @@ png="no"
 ffmpeg="no"
 html="no"
 doc="yes"
+info="yes"
 plugins="yes"
 initcalls="yes"
 mmap="yes"
@@ -192,6 +193,10 @@ if test -z `which texi2html` ; then
     doc="no"
 fi
 
+if test -z `which makeinfo` ; then
+    info="no"
+fi
+
 usage () {
     cat << EOF
 
@@ -240,6 +245,9 @@ for opt do
         ;;
       --mandir=*)
         mandir=`echo $opt | cut -d '=' -f 2`
+        ;;
+      --infodir=*)
+        infodir=`echo $opt | cut -d '=' -f 2`
         ;;
       --source-path=*)
         source_path=`echo $opt | cut -d '=' -f 2`
@@ -343,6 +351,9 @@ if test -z "$datadir"; then
 fi
 if test -z "$mandir"; then
     mandir="${prefix}/man"
+fi
+if test -z "$infodir"; then
+    infodir="${datadir}/info"
 fi
 
 # Checking for CFLAGS
@@ -516,6 +527,7 @@ fi
 echo "Install prefix      $prefix"
 echo "Shared data dir     $datadir"
 echo "Manpages dir        $mandir"
+echo "Infos dir           $infodir"
 echo "Source path         $source_path"
 echo "C compiler          $cc"
 echo "Tiny build          $tiny"
@@ -533,7 +545,8 @@ echo "Plugins support     $plugins"
 echo "Bidir support       $bidir"
 echo "All kmaps           $kmaps"
 echo "All modes           $modes"
-echo "Build doc files     $doc"
+echo "Build html doc      $doc"
+echo "Build info files    $info"
 echo ""
 echo "Creating config.mak and config.h"
 
@@ -546,6 +559,8 @@ echo "datadir=$datadir" >> $TMPMAK
 echo "#define CONFIG_QE_DATADIR \"$datadir\"" >> $TMPH
 echo "mandir=$mandir" >> $TMPMAK
 echo "#define CONFIG_QE_MANDIR \"$mandir\"" >> $TMPH
+echo "infodir=$infodir" >> $TMPMAK
+echo "#define CONFIG_QE_INFODIR \"$infodir\"" >> $TMPH
 echo "MAKE=$make" >> $TMPMAK
 echo "CC=$cc" >> $TMPMAK
 echo "GCC_MAJOR=$gcc_major" >> $TMPMAK
@@ -712,6 +727,11 @@ fi
 if test "$doc" = "yes" ; then
   echo "#define CONFIG_DOC 1" >> $TMPH
   echo "CONFIG_DOC=yes" >> $TMPMAK
+fi
+
+if test "$info" = "yes" ; then
+  echo "#define CONFIG_INFO 1" >> $TMPH
+  echo "CONFIG_INFO=yes" >> $TMPMAK
 fi
 
 # build tree in object directory if source path is different from current one
