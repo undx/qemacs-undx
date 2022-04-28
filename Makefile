@@ -562,16 +562,21 @@ install: $(TARGETS) qe.1 qe.info
 	$(INSTALL) -m 755 -d $(DESTDIR)$(prefix)/bin
 	$(INSTALL) -m 755 -d $(DESTDIR)$(mandir)/man1
 	$(INSTALL) -m 755 -d $(DESTDIR)$(datadir)/qe
-ifdef CONFIG_X11
-	$(INSTALL) -m 755 -s xqe$(EXE) $(DESTDIR)$(prefix)/bin/qemacs$(EXE)
-else
-  ifdef CONFIG_TINY
-	$(INSTALL) -m 755 -s tqe$(EXE) $(DESTDIR)$(prefix)/bin/qemacs$(EXE)
-  else
-	$(INSTALL) -m 755 -s qe$(EXE) $(DESTDIR)$(prefix)/bin/qemacs$(EXE)
-  endif
-endif
-	ln -sf qemacs$(EXE) $(DESTDIR)$(prefix)/bin/qe$(EXE)
+#ifdef CONFIG_X11
+#	$(INSTALL) -m 755 -s xqe$(EXE) $(DESTDIR)$(prefix)/bin/qemacs$(EXE)
+#else
+#  ifdef CONFIG_TINY
+#	$(INSTALL) -m 755 -s tqe$(EXE) $(DESTDIR)$(prefix)/bin/qemacs$(EXE)
+#  else
+#	$(INSTALL) -m 755 -s qe$(EXE) $(DESTDIR)$(prefix)/bin/qemacs$(EXE)
+#  endif
+#endif
+#	ln -sf qemacs$(EXE) $(DESTDIR)$(prefix)/bin/qe$(EXE)
+#
+	$(INSTALL) -m 755 -s xqe$(EXE) $(DESTDIR)$(prefix)/bin/
+	$(INSTALL) -m 755 -s tqe$(EXE) $(DESTDIR)$(prefix)/bin/
+	$(INSTALL) -m 755 -s qe$(EXE) $(DESTDIR)$(prefix)/bin/
+
 ifdef CONFIG_FFMPEG
 	ln -sf qemacs$(EXE) $(DESTDIR)$(prefix)/bin/ffplay$(EXE)
 endif
@@ -587,6 +592,8 @@ endif
 uninstall:
 	rm -f $(DESTDIR)$(prefix)/bin/qemacs$(EXE)   \
 	      $(DESTDIR)$(prefix)/bin/qe$(EXE)       \
+	      $(DESTDIR)$(prefix)/bin/tqe$(EXE)      \
+	      $(DESTDIR)$(prefix)/bin/xqe$(EXE)      \
 	      $(DESTDIR)$(prefix)/bin/ffplay$(EXE)   \
 	      $(DESTDIR)$(mandir)/man1/qe.1          \
 	      $(DESTDIR)$(infodir)/qe.info           \
