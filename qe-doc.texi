@@ -232,8 +232,8 @@ M-r                     : replace-string
 @section Paragraph / case handling
 
 @example
-M-@{                    : backward-paragraph
-M-@}                    : forward-paragraph
+M-@{                     : backward-paragraph
+M-@}                     : forward-paragraph
 M-q                     : fill-paragraph
 M-l                     : downcase-word
 M-u                     : upcase-word
