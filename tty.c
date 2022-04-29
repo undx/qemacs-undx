@@ -116,6 +116,7 @@ enum TermCode {
     TERM_LINUX,
     TERM_CYGWIN,
     TERM_TW100,
+    TERM_ST,
 };
 
 typedef struct TTYState {
@@ -207,6 +208,9 @@ static int tty_dpy_init(QEditScreen *s,
         if (strstart(ts->term_name, "linux", NULL)) {
             ts->term_code = TERM_LINUX;
         } else
+        if (strstart(ts->term_name, "st", NULL)) {
+            ts->term_code = TERM_ST;
+        } else
         if (strstart(ts->term_name, "cygwin", NULL)) {
             ts->term_code = TERM_CYGWIN;
             ts->term_flags |= KBS_CONTROL_H |
@@ -222,7 +226,11 @@ static int tty_dpy_init(QEditScreen *s,
         ts->term_flags |= USE_TRUE_COLORS | USE_256_COLORS;
     }
     if (strstr(ts->term_name, "256")) {
-        ts->term_flags |= USE_256_COLORS;
+        if (strstart(ts->term_name, "st", NULL)) {
+            ts->term_flags |= USE_TRUE_COLORS | USE_256_COLORS;
+        } else {
+            ts->term_flags |= USE_256_COLORS;
+        }
     }
     if ((p = getenv("TERM_PROGRAM")) && strequal(p, "iTerm.app")) {
         /* iTerm and iTerm2 support true colors */
@@ -899,6 +907,7 @@ static void comb_cache_describe(QEditScreen *s, EditBuffer *b) {
               ts->term_code == TERM_VT100 ? "VT100" :
               ts->term_code == TERM_XTERM ? "XTERM" :
               ts->term_code == TERM_LINUX ? "LINUX" :
+              ts->term_code == TERM_ST ? "ST" :
               ts->term_code == TERM_CYGWIN ? "CYGWIN" :
               ts->term_code == TERM_TW100 ? "TW100" :
               "");
