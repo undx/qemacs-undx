@@ -127,7 +127,6 @@ QEmacs goes to @code{dired} mode automatically so that you can browse your
 files easily (same as @kbd{C-x C-d} key).
 
 @node Common editing commands
-
 @chapter Common editing commands
 
 @section Concepts
@@ -158,8 +157,16 @@ bindings, including the ones of the current editing mode.
 
 @example
 C-h C-h, F1             : help-for-help
+C-h ?                   : about-emacs
+C-h a                   : apropos
 C-h b                   : describe-bindings
-C-h c                   : describe-key-briefly
+C-h B                   : show-bindings
+C-h c, C-h k            : describe-key-briefly
+C-h C-b                 : describe-buffer
+C-h w                   : describe-window
+C-h s                   : describe-screen
+C-h d                   : start-trace-mode
+C-h t                   : set-trace-options
 @end example
 
 @section Simple commands
@@ -267,14 +274,6 @@ C-x 3                   : split-window-horizontally
 C-x f                   : toggle-full-screen
 @end example
 
-@section Help
-
-@example
-C-h C-h, f1             : help-for-help
-C-h b                   : describe-bindings
-C-h c, C-h k            : describe-key-briefly
-@end example
-
 @section International
 
 @example
@@ -306,6 +305,7 @@ C-x RET l               : toggle-line-numbers
 C-x RET t               : toggle-truncate-lines
 C-x RET w               : word-wrap
 C-x C-d                 : dired
+C-h m                   : mandelbrot-test
 @end example
 
 @node Configuration file and resources
@@ -334,7 +334,6 @@ Set a global key binding to a command.
 (X11) Set the window size, in character cells.
 
 @item set_system_font(family, system_fonts)
-
 (X11) Maps a system font to a QEmacs font family. Multiple fonts can be
 given as fallback (@xref{Fonts}).
 
