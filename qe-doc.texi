@@ -308,6 +308,22 @@ C-x C-d                 : dired
 C-h m                   : mandelbrot-test
 @end example
 
+@section WIP
+Not all functions may be operational or are BUGGED ;-)
+Use with caution!
+
+@example
+M-SPACE                 : just-one-space
+M-/                     : hippie-expand
+M-c                     : duplicate-thing-at-point
+C-<                     : move-line-up
+C->                     : move-line-down
+M-j                     : join-lines
+M-z                     : zap-up-to-char
+M-Z                     : zap-back-to-char
+@end example
+
+
 @node Configuration file and resources
 @chapter Configuration file and resources
 
