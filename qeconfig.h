@@ -84,7 +84,7 @@ static CmdDef basic_commands[] = {
           "scroll-up", do_scroll_up_down, 2 ) /* u? */
     CMD1( KEY_META('z'), KEY_NONE,
           "scroll-down-one", do_scroll_up_down, -1 ) /* u? */
-    CMD1( KEY_CTRL('z'), KEY_NONE,
+    CMD1( KEY_NONE, KEY_NONE,
           "scroll-up-one", do_scroll_up_down, 1 ) /* u? */
     CMD0( KEY_CTRL('a'), KEY_HOME,
           "beginning-of-line", do_bol)
@@ -412,6 +412,12 @@ static CmdDef basic_commands[] = {
     CMD2( KEY_NONE, KEY_NONE,
           "add-resource-path", do_add_resource_path, ESs,
           "s{resource path: }[file]|file|")
+
+    /* mouse commands */
+    CMD1( KEY_MOUSE_WHEEL_DOWN, KEY_NONE,
+         "scroll-down", do_scroll_up_down, 3)
+    CMD1( KEY_MOUSE_WHEEL_UP, KEY_NONE,
+         "scroll-up", do_scroll_up_down, -3)
 
 
     CMD_DEF_END,

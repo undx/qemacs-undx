@@ -42,13 +42,13 @@
 #endif
 
 #ifndef DEFAULT_TAB_WIDTH
-#define DEFAULT_TAB_WIDTH  4 /* used to be 8 */
+#define DEFAULT_TAB_WIDTH  8 /* used to be 4 */
 #endif
 #ifndef DEFAULT_INDENT_WIDTH
-#define DEFAULT_INDENT_WIDTH  4 /* used to be 8 */
+#define DEFAULT_INDENT_WIDTH  8 /* used to be 4 */
 #endif
 #ifndef DEFAULT_FILL_COLUMN
-#define DEFAULT_FILL_COLUMN  70
+#define DEFAULT_FILL_COLUMN  80
 #endif
 
 /* OS specific defines */
@@ -920,6 +920,13 @@ enum QEEventType {
 #define KEY_F19         KEY_ESC1(33)
 #define KEY_F20         KEY_ESC1(34)
 
+#define KEY_MOUSE_MOVE       KEY_NONE -1
+#define KEY_MOUSE_BUTTON_1   KEY_NONE -2
+#define KEY_MOUSE_BUTTON_2   KEY_NONE -3
+#define KEY_MOUSE_BUTTON_3   KEY_NONE -4
+#define KEY_MOUSE_WHEEL_UP   KEY_NONE -5
+#define KEY_MOUSE_WHEEL_DOWN KEY_NONE -6
+
 typedef struct QEKeyEvent {
     enum QEEventType type;
     int key;
@@ -1490,6 +1497,8 @@ struct EditState {
     int compose_start_offset;
     unsigned int compose_buf[20];
     OWNED EditState *next_window;
+    /* tty mouse handling */
+    int mouse_handling;
 };
 
 /* Ugly patch for saving/restoring window data upon switching buffer */

@@ -358,6 +358,15 @@ static int tty_dpy_init(QEditScreen *s,
     }
     put_status(NULL, "tty charset: %s", s->charset->name);
 
+    // enable mouse tracking
+    TTY_FPRINTF(s->STDOUT,
+                "\e[?1000h" /* request buttons press and release reporting */
+                //"\e[?1003h" /* request all movement reporting */
+                "\e[?1015h" /* request urxvt mode */
+                "\e[?1006h" /* request sgr mode*/
+                );
+    fflush(s->STDOUT); // send immediately
+
     atexit(tty_term_exit);
 
     sig.sa_handler = tty_term_resize;
@@ -402,6 +411,10 @@ static void tty_dpy_close(QEditScreen *s)
                 "\r\033[m\033[K"    /* return erase eol */
                );
 #endif
+
+    // disable mouse tracking
+    TTY_FPRINTF(s->STDOUT, "\e[?1000l");
+
     fflush(s->STDOUT);
 
     qe_free(&ts->screen);
@@ -573,6 +586,7 @@ static void tty_read_handler(void *opaque)
 
     switch (ts->input_state) {
     case IS_NORM:
+        eb_trace_bytes("<norm ", -1, EB_TRACE_TTY);
         /* charset handling */
         if (s->charset == &charset_utf8) {
             if (ts->utf8_index && !(ch > 0x80 && ch < 0xc0)) {
@@ -606,6 +620,7 @@ static void tty_read_handler(void *opaque)
         }
         break;
     case IS_ESC:
+        eb_trace_bytes("<esc ", -1, EB_TRACE_TTY);
         if (ch == '\033') {
             /* cygwin A-right transmit ESC ESC[C ... */
             goto the_end;
@@ -630,8 +645,10 @@ static void tty_read_handler(void *opaque)
         }
         break;
     case IS_CSI:
+        eb_trace_bytes("<csi ", -1, EB_TRACE_TTY);
         if (ch >= '0' && ch <= '9') {
             ts->input_param = ts->input_param * 10 + ch - '0';
+            fprintf(stderr, "csi:%c ip:%d", ch, ts->input_param);
             break;
         }
         ts->input_state = IS_NORM;
@@ -653,9 +670,69 @@ static void tty_read_handler(void *opaque)
                 goto the_end;
             }
             break;
+        case '<':
+            char c;
+            int b = 0, x = 0, y = 0;
+            // read button 0 1 2 64 65
+            while (1) {
+                read(fileno(s->STDIN), &c, 1);
+                if (c == ';')
+                    break;
+                b = 10 * b + (c - '0');
+            }
+            // read x (col)
+            while (1) {
+                read(fileno(s->STDIN), &c, 1);
+                if (c == ';')
+                    break;
+                x = x * 10 + (c - '0');
+            }
+            // read y (row)
+            while (1) {
+                read(fileno(s->STDIN), &c, 1);
+                if (c == 'M' || c == 'm')
+                    break;
+                y = y * 10 + (c - '0');
+            }
+            char mr [50];
+            sprintf(mr, "button:%d col:%d row:%d state:%s", b, x, y, c == 'M' ? "pressed" : "released");
+            eb_trace_bytes(mr, -1, EB_TRACE_TTY);
+            // TODO fill a mouse structure for selection
+            switch(b){
+            case 0:
+                ch = KEY_MOUSE_BUTTON_1;
+                break;
+            case 1:
+                ch = KEY_MOUSE_BUTTON_2;
+                break;
+            case 2:
+                ch = KEY_MOUSE_BUTTON_3;
+                break;
+            case 35:
+                ch = KEY_MOUSE_MOVE;
+                break;
+            case 64:
+                ch = KEY_MOUSE_WHEEL_UP;
+                break;
+            case 65:
+                ch = KEY_MOUSE_WHEEL_DOWN;
+                break;
+            }
+            goto the_end;
+            break;
             /* All these for ansi|cygwin */
         default:
+            /*  Alt-Control modifier */
+            if (ts->input_param == 7){
+                fprintf(stderr, " %c [alt-control]", ch);
+            } else
+            /*  Shift-Control modifier */
+            if (ts->input_param == 6){
+                fprintf(stderr, " %c [shift-control]", ch);
+            } else
+            /* Control modifier */
             if (ts->input_param == 5) {
+                fprintf(stderr, " %c [control]", ch);
                 /* xterm CTRL-arrows */
                 /* iterm2 CTRL-arrows:
                  * C-up    = ^[[1;5A
@@ -670,7 +747,17 @@ static void tty_read_handler(void *opaque)
                 case 'D': ch = KEY_CTRL_LEFT;  goto the_end;
                 }
             } else
+            /*  Shift-Alt modifier */
+            if (ts->input_param == 4){
+                fprintf(stderr, " %c [shift-alt]", ch);
+            } else
+            /* Alt modifier */
+            if (ts->input_param == 3){
+                fprintf(stderr, " %c [alt]", ch);
+            } else
+            /* Shift modifier */
             if (ts->input_param == 2) {
+                fprintf(stderr, " %c [shift]", ch);
                 /* iterm2 SHIFT-arrows:
                  * S-left  = ^[[1;2D
                  * S-right = ^[[1;2C
@@ -683,6 +770,7 @@ static void tty_read_handler(void *opaque)
                 case 'D': ch = KEY_LEFT;  goto the_end;
                 }
             } else {
+                fprintf(stderr, " %c [%d]", ch, ts->input_param);
                 switch (ch) {
                 case 'A': ch = KEY_UP;        goto the_end; // kcuu1
                 case 'B': ch = KEY_DOWN;      goto the_end; // kcud1
@@ -700,6 +788,7 @@ static void tty_read_handler(void *opaque)
         }
         break;
     case IS_CSI2:
+        eb_trace_bytes("<csi2 ", -1, EB_TRACE_TTY);
         /* cygwin/linux terminal */
         ts->input_state = IS_NORM;
         switch (ch) {
@@ -711,6 +800,7 @@ static void tty_read_handler(void *opaque)
         }
         break;
     case IS_ESC2:       // "\EO"
+        eb_trace_bytes("<esc2 ", -1, EB_TRACE_TTY);
         /* xterm/vt100 fn */
         ts->input_state = IS_NORM;
         switch (ch) {

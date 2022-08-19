@@ -8944,6 +8944,10 @@ void set_user_option(const char *user)
             "/usr/lib/qe");
 }
 
+void do_toggle_tty_mouse(EditState *s){
+
+}
+
 void set_tty_charset(const char *name)
 {
     qe_free(&qe_state.tty_charset);
