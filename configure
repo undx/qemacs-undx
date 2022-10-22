@@ -153,7 +153,7 @@ case $targetos in
 esac
 
 # find source path
-# XXX: we assume an absolute path is given when launching configure, 
+# XXX: we assume an absolute path is given when launching configure,
 # except in './configure' case.
 source_path=${0%configure}
 source_path=${source_path%/}
@@ -168,7 +168,7 @@ if test -d "./ffmpeg" ; then
     ffmpeg_srcdir="./ffmpeg"
 fi
 
-if test -f "/usr/include/png.h" ; then
+if test -f "$x11path/include/png.h" ; then
     png="yes"
 fi
 
@@ -186,6 +186,30 @@ for x11path in /usr /opt/X11 /usr/X11R6; do
             xshm="yes"
         fi
         break
+    fi
+done
+
+# for guix
+for x11path in ~/.guix-profile /run/current-system/profile; do
+    if test -f "$x11path/include/X11/Xlib.h" ; then
+        x11="yes"
+        x11_libdir="$x11path/lib"
+        x11_includedir="$x11path/include"
+        LDFLAGS="$LDFLAGS -L$x11path/lib"
+        html="yes"
+        if test -f "$x11path/include/X11/extensions/Xv.h" ; then
+            xv="yes"
+        fi
+        if test -f "$x11path/include/X11/extensions/Xshm.h" ; then
+            xshm="yes"
+        fi
+        if test -f "$x11path/include/X11/extensions/XShm.h" ; then
+            xshm="yes"
+        fi
+        break
+    fi
+    if test -f "$x11path/include/png.h" ; then
+        png="yes"
     fi
 done
 
